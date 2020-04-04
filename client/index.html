@@ -9,8 +9,14 @@
 </head>
 
 <body>
-    <p>Welcome to the chat app again</p>
+    <ol id="messages"></ol>
+    <form id="message-form">
+        <input type="text" id="message" name="message" placeholder="Type your message" />
+        <button type="submit">Send</button>
+    </form>
+
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/libs/jquery.js"></script>
     <script src="js/index.js"></script>
 </body>
 

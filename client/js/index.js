@@ -2,18 +2,28 @@ var socket = io();
 
 socket.on("connect", function () {
   console.log("connected to server");
-  //   socket.emit("createMessage", {
-  //     from: "sumit",
-  //     text: "hi.. how are u",
-  //     createdAt: new Date(),
-  //   });
 });
 
 // listening for server to respons
 socket.on("newMessage", function (message) {
-  console.log(message);
+  var li = jQuery("<li></li>").text(`${message.from}: ${message.text}`);
+  jQuery("#messages").append(li);
 });
 
 socket.on("disconnect", function () {
   console.log("disconnected");
+});
+
+jQuery("#message-form").on("submit", function (e) {
+  e.preventDefault();
+  socket.emit(
+    "createMessage",
+    {
+      from: "User",
+      text: jQuery("[name='message']").val(),
+    },
+    function (data) {
+      console.log(data);
+    }
+  );
 });
