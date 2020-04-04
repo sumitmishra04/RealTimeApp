@@ -12,3 +12,4 @@ app.use(express.static(clientPath));
 app.listen(port, () => {
   console.log("serve is up and running");
 });
+
