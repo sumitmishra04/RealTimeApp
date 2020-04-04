@@ -3,6 +3,7 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+const { generateMessage } = require("./utils/message");
 const clientPath = path.join(__dirname, "../client");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,25 +30,19 @@ io.on("connection", (socket) => {
   // client call createMessage after submitting form
 
   // socket.emit from admin to new joined user
-  socket.emit("newMessage", {
-    from: "Estimates",
-    text: "Hi Sumit ... great you joined",
-    createdAt: new Date().getTime(),
-  });
-  // socket.broadcast.emit from admin text new user joined
-  socket.broadcast.emit("newMessage", {
-    from: "Admin",
-    text: "Sumit Joined",
-    createdAt: new Date().getTime(),
-  });
+  socket.emit(
+    "newMessage",
+    generateMessage("Estimates", "Hi Sumit ... great you joined")
+  );
+  // socket.broadcast.emit from admin text new user joined except one who joined
+  socket.broadcast.emit(
+    "newMessage",
+    generateMessage("Estimates", "New user joined")
+  );
   socket.on("createMessage", (message) => {
     console.log("create message", message);
     // server sends it's response to all client
-    io.emit("newMessage", {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime(),
-    });
+    io.emit("newMessage", generateMessage(message.from, message.text));
     // socket.broadcast.emit("newMessage", {
     //   from: message.from,
     //   text: message.text,
