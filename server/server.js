@@ -20,14 +20,39 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("client disconnected");
   });
-  socket.emit("newMessage", {
-    from: "Ritesh",
-    text: "great ...",
-    createdAt: new Date(),
-  });
+  // emit New message when client sends this event
+  // socket.emit("newMessage", {
+  //   from: "Ritesh",
+  //   text: "great ...",
+  //   createdAt: new Date(),
+  // });
+  // client call createMessage after submitting form
 
+  // socket.emit from admin to new joined user
+  socket.emit("newMessage", {
+    from: "Estimates",
+    text: "Hi Sumit ... great you joined",
+    createdAt: new Date().getTime(),
+  });
+  // socket.broadcast.emit from admin text new user joined
+  socket.broadcast.emit("newMessage", {
+    from: "Admin",
+    text: "Sumit Joined",
+    createdAt: new Date().getTime(),
+  });
   socket.on("createMessage", (message) => {
     console.log("create message", message);
+    // server sends it's response to all client
+    io.emit("newMessage", {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime(),
+    });
+    // socket.broadcast.emit("newMessage", {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime(),
+    // });
   });
 });
 server.listen(port, () => {
