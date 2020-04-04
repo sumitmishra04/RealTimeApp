@@ -4,9 +4,12 @@ socket.on("connect", function () {
   console.log("connected to server");
 });
 
-// listening for server to respons
+// listening for server to response
 socket.on("newMessage", function (message) {
-  var li = jQuery("<li></li>").text(`${message.from}: ${message.text}`);
+  var formattedTime = moment(message.createdAt).format("h:mm a");
+  var li = jQuery("<li></li>").text(
+    `${message.from} ${formattedTime}: ${message.text}`
+  );
   jQuery("#messages").append(li);
 });
 
@@ -54,7 +57,9 @@ locationBtn.on("click", function () {
 socket.on("newLocationMessage", function (data) {
   var li = jQuery("<li></li>");
   var a = jQuery('<a target="_blank">My Current Location</a>');
-  li.text(`${data.from}: `);
+  var formattedTime = moment(data.createdAt).format("h:mm a");
+
+  li.text(`${data.from} ${formattedTime} `);
   a.attr("href", data.url);
   li.append(a);
   jQuery("#messages").append(li);
