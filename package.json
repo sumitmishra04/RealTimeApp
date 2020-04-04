@@ -1,0 +1,17 @@
+{
+  "name": "real-time-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "engines": {
+    "node": "12.14.1"
+  },
+  "author": "sumit",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
