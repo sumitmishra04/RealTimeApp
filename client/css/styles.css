@@ -185,6 +185,8 @@ button:disabled {
 }
 .message {
   padding: 10px;
+  background: #ebebff;
+  margin-bottom: 5px;
 }
 .message__title {
   display: flex;
