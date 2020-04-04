@@ -3,7 +3,7 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
-const { generateMessage } = require("./utils/message");
+const { generateMessage, generateURL } = require("./utils/message");
 const clientPath = path.join(__dirname, "../client");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -44,11 +44,11 @@ io.on("connection", (socket) => {
     // server sends it's response to all client
     io.emit("newMessage", generateMessage(message.from, message.text));
     callback("This is from the server");
-    // socket.broadcast.emit("newMessage", {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime(),
-    // });
+  });
+
+  // https://google.com/maps?q=12.9399368,77.7326561
+  socket.on("createLocationMessage", (coords, callback) => {
+    io.emit("newLocationMessage", generateURL("Admin", coords));
   });
 });
 server.listen(port, () => {
