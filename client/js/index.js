@@ -7,10 +7,17 @@ socket.on("connect", function () {
 // listening for server to response
 socket.on("newMessage", function (message) {
   var formattedTime = moment(message.createdAt).format("h:mm a");
-  var li = jQuery("<li></li>").text(
-    `${message.from} ${formattedTime}: ${message.text}`
-  );
-  jQuery("#messages").append(li);
+  // var li = jQuery("<li></li>").text(
+  //   `${message.from} ${formattedTime}: ${message.text}`
+  // );
+  // jQuery("#messages").append(li);
+  var template = jQuery("#message-template").html();
+  var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime,
+  });
+  jQuery("#messages").append(html);
 });
 
 socket.on("disconnect", function () {
@@ -55,12 +62,12 @@ locationBtn.on("click", function () {
 });
 
 socket.on("newLocationMessage", function (data) {
-  var li = jQuery("<li></li>");
-  var a = jQuery('<a target="_blank">My Current Location</a>');
   var formattedTime = moment(data.createdAt).format("h:mm a");
-
-  li.text(`${data.from} ${formattedTime} `);
-  a.attr("href", data.url);
-  li.append(a);
-  jQuery("#messages").append(li);
+  var template = jQuery("#location-message-template").html();
+  var html = Mustache.render(template, {
+    url: data.url,
+    from: data.from,
+    createdAt: formattedTime,
+  });
+  jQuery("#messages").append(html);
 });
