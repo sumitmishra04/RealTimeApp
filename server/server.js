@@ -1,8 +1,11 @@
 const path = require("path");
 const express = require("express");
+const bodyParser = require("body-parser");
+
 const clientPath = path.join(__dirname, "../client");
-const port = process.env.PORT || 3000;
 const app = express();
+
+const port = process.env.PORT || 5000;
 // serves up the public folder
 app.use(express.static(clientPath));
 
