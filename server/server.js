@@ -2,29 +2,49 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
+const axios = require("axios");
+const index = require("./routes/index");
 
 const { generateMessage, generateURL } = require("./utils/message");
 const { isRealString } = require("./utils/validation");
 const { Users } = require("./utils/users");
 const clientPath = path.join(__dirname, "../client");
-const app = express();
 const port = process.env.PORT || 5000;
+
+const app = express();
+app.use(index);
 
 const server = http.createServer(app);
 // get web socket server
 const io = socketIO(server);
+const getApiAndEmit = async (socket) => {
+  try {
+    const res = await axios.get(
+      "https://boiling-chamber-47433.herokuapp.com/welcome"
+    ); // Getting the data from DarkSky
+    console.log("THEN BLOCK", JSON.stringify(res.data));
+    // fetch("https://boiling-chamber-47433.herokuapp.com/welcome").then((res) => {
+    //   console.log("THEN BLOCK", res);
+    socket.emit("FromAPI", JSON.stringify(res.data)); // Emitting a new message. It will be consumed by the client
+    // });
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+};
+
 var users = new Users();
 // serves up the public folder
-app.use(express.static(clientPath));
+// app.use(express.static(clientPath));
 // listen for new connection and do something in the callback
 io.on("connection", (socket) => {
-  console.log("new user connected");
-
+  getApiAndEmit(socket);
   socket.on("join", (params, callback) => {
+    console.log("PARAMS", params);
     if (!isRealString(params.name) || !isRealString(params.room)) {
       return callback("Name and room name are required");
     }
     socket.join(params.room);
+
     // socket.leave('the ofc room');
     // io.emit -> to every user
     // socket.broadcats.emit -> all but except one
@@ -38,7 +58,7 @@ io.on("connection", (socket) => {
     // socket.emit from admin to new joined user
     socket.emit(
       "newMessage",
-      generateMessage("Admin", "Hi Sumit ... great you joined")
+      generateMessage("Admin", "Hi ... great you joined")
     );
     // socket.broadcast.emit from admin text new user joined except one who joined
     socket.broadcast
